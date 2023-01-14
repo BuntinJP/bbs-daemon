@@ -23,25 +23,24 @@ class App extends Component {
         });
     }
     render() {
-        console.log(this.state.items[0]);
-        let chats = this.state.items.map((e) => (
-            <div key={e._id}>
-                {e.name}
-                <div className="panel panel-default">
-                    <div className="panel-body">{e.body}</div>
-                    <div className="panel-footer">{e.date}</div>
-                </div>
-            </div>
-        ));
-        if (this.state.items.map.length == 0) {
-            console.log(this.state.items.length);
-            chats = 'まだコメントはありません';
-        }
+        console.log(this.state.items.length);
+        let chats =
+            this.state.items.length !== 0
+                ? this.state.items.map((e) => (
+                      <div key={e.id}>
+                          {e.name}
+                          <div className="panel panel-default">
+                              <div className="panel-body">{e.body}</div>
+                              <div className="panel-footer">{e.date}</div>
+                          </div>
+                      </div>
+                  ))
+                : 'まだコメントはありません';
         return (
             <div className="container">
-                <h2>掲示板アプリ</h2>
+                <h2>掲示板</h2>
                 <div className="page-header">
-                    <h4>コメント</h4>
+                    <h4>投稿</h4>
                 </div>
                 {chats}
                 <div className="panel panel-default">

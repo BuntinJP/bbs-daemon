@@ -17,16 +17,13 @@ connection.connect((err) => {
 
 // サーバー
 const express = require('express');
-const { connect } = require('superagent');
 const app = express();
 const portNum = 3001;
 app.listen(portNum, () => {
-    console.log('Express Server is started', `http://localhost:${portNum}`);
+    console.log('Server is started', `http://localhost:${portNum}`);
 });
 
 app.use('/', express.static('./public'));
-app.use('/test', express.static('./public/404.html'));
-
 app.get('/data', (req, res) => {
     connection.query('select * from log', (error, results) => {
         if (error) throw error;
@@ -34,6 +31,7 @@ app.get('/data', (req, res) => {
         res.json(results);
     });
 });
+
 /* --------------------------------------------------------
 API
 -------------------------------------------------------- */
@@ -84,6 +82,10 @@ app.get('/api/post', (req, res) => {
     });
 });
 
+app.use((req, res) => {
+    res.status(404);
+    express.static('./public/404.html');
+});
 function sendJSON(res, result, obj) {
     obj['result'] = result;
     res.json(obj);
