@@ -15,7 +15,13 @@ create table log (id int, name varchar(100), body varchar(10000), date varchar(1
 exit;
 ```
 
-    node server.js
+最後に、以下のコマンドを実行してください。
+
+```bash
+npm i
+npm run build
+npm start
+```
 
 ## Screenshots
 
