@@ -1,12 +1,8 @@
 // mysql
+const fs = require('fs');
+const config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
 const mysql = require('mysql2');
-const connection = mysql.createConnection({
-    host: '127.0.0.1',
-    user: 'buntin',
-    root: '3306',
-    password: 'bububuntin2687',
-    database: 'bbs',
-});
+const connection = mysql.createConnection(config);
 connection.connect((err) => {
     if (err) {
         console.log('error connecting: ' + err.stack);

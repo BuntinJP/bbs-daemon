@@ -1,0 +1,7 @@
+{
+    "host": "127.0.0.1",
+    "user": "buntin",
+    "root": "3306",
+    "password": "bububuntin2687",
+    "database": "bbs"
+}
