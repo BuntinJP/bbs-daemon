@@ -18,7 +18,7 @@ exit;
 最後に、以下のコマンドを実行してください。
 
 ```bash
-npm i
+npm i --force
 npm run build
 npm start
 ```
