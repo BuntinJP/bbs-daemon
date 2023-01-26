@@ -1,6 +1,6 @@
 # bbs-powered-by-database
 
-### データベース課題制作物
+### 課題制作物
 
 ## Usage
 
