@@ -1,6 +1,7 @@
 # bbs-powered-by-database
 
 ### 課題制作物
+https://bbs.buntin.tech
 
 ## Usage
 
