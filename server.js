@@ -3,13 +3,6 @@ const fs = require('fs');
 const config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
 const mysql = require('mysql2');
 const connection = mysql.createConnection(config);
-connection.connect((err) => {
-    if (err) {
-        console.log('error connecting: ' + err.stack);
-        return;
-    }
-    console.log('success');
-});
 
 // サーバー
 const express = require('express');
@@ -21,11 +14,14 @@ app.listen(portNum, () => {
 
 app.use('/', express.static('./public'));
 app.get('/data', (req, res) => {
-    connection.query('select * from log', (error, results) => {
+    let c = mysql.createConnection(config);
+    c.connect();
+    c.query('select * from log', (error, results) => {
         if (error) throw error;
         console.log(results);
         res.json(results);
     });
+    c.end();
 });
 
 /* --------------------------------------------------------
@@ -34,12 +30,15 @@ API
 // 取得
 app.get('/api/getLog', (req, res) => {
     console.log('取得');
-    connection.query('select * from log', (error, results) => {
+    let c = mysql.createConnection(config);
+    c.connect();
+    c.query('select * from log', (error, results) => {
         if (error) {
-            sendJSON(res, false, { logs: [], msg: err });
+            sendJSON(res, false, { logs: [], msg: error });
             return;
         }
         sendJSON(res, true, { logs: results });
+        c.end();
     });
 });
 
@@ -49,10 +48,9 @@ app.get('/api/post', (req, res) => {
     const q = req.query;
     //name
     let writerName = q.name !== '' ? q.name : '名無しさん';
-
     let id = null;
-
-    connection.query('select count(*) as c from log', (error, results) => {
+    let c = mysql.createConnection(config);
+    c.query('select count(*) as c from log', (error, results) => {
         if (error) throw error;
         id = results[0].c;
         let d = new Date();
@@ -63,7 +61,7 @@ app.get('/api/post', (req, res) => {
             /\n|\r/g,
             ''
         );
-        connection.query(
+        c.query(
             'INSERT INTO log VALUES (?, ?, ?, ?)',
             [id, writerName, q.body, date],
             (error, results) => {
@@ -75,6 +73,7 @@ app.get('/api/post', (req, res) => {
                 sendJSON(res, true, {});
             }
         );
+        c.end();
     });
 });
 
