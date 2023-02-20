@@ -38,8 +38,8 @@ app.get('/api/getLog', (req, res) => {
             return;
         }
         sendJSON(res, true, { logs: results });
-        c.end();
     });
+    c.end();
 });
 
 // 書き込み
@@ -73,8 +73,8 @@ app.get('/api/post', (req, res) => {
                 sendJSON(res, true, {});
             }
         );
-        c.end();
     });
+    c.end();
 });
 
 app.use((req, res) => {
