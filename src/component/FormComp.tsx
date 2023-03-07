@@ -1,24 +1,33 @@
+// @ts-expect-error TS(7016): Could not find a declaration file for module 'reac... Remove this comment to see the full error message
 import React, { Component } from 'react';
+// @ts-expect-error TS(7016): Could not find a declaration file for module 'reac... Remove this comment to see the full error message
 import ReactDOM from 'react-dom';
+// @ts-expect-error TS(7016): Could not find a declaration file for module 'supe... Remove this comment to see the full error message
 import request from 'superagent';
+// @ts-expect-error TS(7016): Could not find a declaration file for module 'reac... Remove this comment to see the full error message
 import { Button } from 'react-bootstrap';
+// @ts-expect-error TS(7016): Could not find a declaration file for module 'reac... Remove this comment to see the full error message
 import Dialog from 'react-bootstrap-dialog';
 
 class FormComp extends Component {
-    constructor(props) {
+    dialog: any;
+    props: any;
+    setState: any;
+    state: any;
+    constructor(props: any) {
         super(props);
         this.state = {
             name: '',
             body: '',
         };
     }
-    nameChanged(e) {
+    nameChanged(e: any) {
         this.setState({ name: e.target.value });
     }
-    bodyChanged(e) {
+    bodyChanged(e: any) {
         this.setState({ body: e.target.value });
     }
-    post(e) {
+    post(e: any) {
         if (this.state.body == '') {
             this.dialog.showAlert('コメントを入力してください！');
             return;
@@ -29,7 +38,7 @@ class FormComp extends Component {
                 name: this.state.name,
                 body: this.state.body,
             })
-            .end((err, data) => {
+            .end((err: any, data: any) => {
                 if (err) {
                     console.error(err);
                 }
@@ -41,9 +50,13 @@ class FormComp extends Component {
     }
     render() {
         return (
+            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
             <form>
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 <div className="form-group">
+                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                     <label htmlFor="name">名前：</label>
+                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                     <input
                         id="name"
                         className="form-control"
@@ -51,11 +64,15 @@ class FormComp extends Component {
                         type="text"
                         placeholder="名無しさん"
                         value={this.state.name}
-                        onChange={(e) => this.nameChanged(e)}
+                        onChange={(e: any) => this.nameChanged(e)}
                     />
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 </div>
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 <div className="form-group">
+                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                     <label htmlFor="comment">コメント：</label>
+                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                     <textarea
                         id="comment"
                         className="form-control"
@@ -63,23 +80,34 @@ class FormComp extends Component {
                         maxLength="10000"
                         placeholder="コメントを入力してください"
                         value={this.state.body}
-                        onChange={(e) => this.bodyChanged(e)}
+                        onChange={(e: any) => this.bodyChanged(e)}
+                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                     ></textarea>
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 </div>
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 <div className="form-group">
+                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                     <div className="control-label">
+                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                         <p style={styles.right}>
-                            <Button onClick={(e) => this.post()}>
+                            // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
+                            <Button onClick={(e: any) => this.post()}>
                                 投稿する
                             </Button>
+                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                         </p>
+                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                     </div>
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 </div>
+                // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
                 <Dialog
-                    ref={(el) => {
+                    ref={(el: any) => {
                         this.dialog = el;
                     }}
                 />
+            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
             </form>
         );
     }
