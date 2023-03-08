@@ -38,6 +38,11 @@ app.get('/api/getLog', (req, res) => {
             return;
         }
         sendJSON(res, true, { logs: results });
+<<<<<<< HEAD
+=======
+        c.end();
+        console.log(results);
+>>>>>>> 7e6db13 (とりま)
     });
     c.end();
 });

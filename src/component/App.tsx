@@ -1,80 +1,213 @@
-// @ts-expect-error TS(7016): Could not find a declaration file for module 'reac... Remove this comment to see the full error message
 import React, { Component } from 'react';
-// @ts-expect-error TS(7016): Could not find a declaration file for module 'reac... Remove this comment to see the full error message
-import ReactDOM from 'react-dom';
-// @ts-expect-error TS(7016): Could not find a declaration file for module 'supe... Remove this comment to see the full error message
-import request from 'superagent';
-// @ts-expect-error TS(7016): Could not find a declaration file for module 'reac... Remove this comment to see the full error message
-import { Button } from 'react-bootstrap';
-// @ts-expect-error TS(6142): Module './FormComp.js' was resolved to '/Users/Bun... Remove this comment to see the full error message
-import FormComp from './FormComp.js';
-class App extends Component {
+import axios from 'axios';
+import { useState, useEffect } from 'react';
+import './App.css';
+interface log {
+    id: number;
+    name: string;
+    body: string;
+    data: string;
+}
+interface chatProps {
+    length: number;
+    items?: log[];
+}
+type getlog = () => any[];
+const loadLogs: getlog = () => {
+    let logs: any = [];
+    axios.get('/api/getLog').then((data: any) => {
+        logs = data.data.logs;
+        return logs;
+    });
+    return logs;
+};
+const chats = (length: number, items = []) => {
+    if (length === 0) {
+        return (
+            <>
+                <p> まだコメントはありません。</p>
+            </>
+        );
+    }
+    let chats =
+        length !== 0
+            ? Array.from(
+                  items.map((e: any) => (
+                      <div key={e.id}>
+                          {e.name}
+                          <div className="panel panel-default">
+                              <div className="panel-body">{e.body}</div>
+                              <div className="panel-footer">{e.date}</div>
+                          </div>
+                      </div>
+                  ))
+              )
+            : 'まだコメントはありません';
+    return chats;
+};
+
+const App: React.FC = () => {
+    const { items, setItems } = useState<log[]>([]);
+    useEffect(() => {
+        setItems(loadLogs());
+    });
+    return (
+        <div className="container">
+            <h2>掲示板</h2>
+            <div className="page-header">
+                <h4>投稿</h4>
+            </div>
+            {chats}
+            <div className="panel panel-default">
+                <div className="panel-heading">コメントを入力する</div>
+                <div className="panel-body">
+                    <FormComp onPost={(e: any) => loadlogs()} />
+                </div>
+            </div>
+        </div>
+    );
+};
+
+class FormComp extends Component {
+    dialog: any;
+    props: any;
     setState: any;
     state: any;
     constructor(props: any) {
         super(props);
         this.state = {
-            items: [],
+            name: '',
+            body: '',
         };
     }
-    componentWillMount() {
-        this.loadLogs();
+    nameChanged(e: any) {
+        this.setState({ name: e.target.value });
     }
-    loadLogs() {
-        request.get('/api/getLog').end((err: any, data: any) => {
-            if (err) {
-                console.error(err);
-                return;
+    bodyChanged(e: any) {
+        this.setState({ body: e.target.value });
+    }
+    post(e: any) {
+        if (this.state.body == '') {
+            this.dialog.showAlert('コメントを入力してください！');
+            return;
+        }
+        axios.get('/api/post').then((data: any) => {
+            if (data.data.status == 'ok') {
+                this.setState({ body: '' });
+                if (this.props.onPost) {
+                    this.props.onPost();
+                }
+            } else {
+                this.dialog.showAlert('投稿に失敗しました。');
             }
-            this.setState({ items: data.body.logs });
         });
     }
     render() {
-        console.log(this.state.items.length);
-        let chats =
-            this.state.items.length !== 0
-                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
-                ? this.state.items.map((e: any) => <div key={e.id}>
-                {e.name}
-                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
-                <div className="panel panel-default">
-                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
-                    <div className="panel-body">{e.body}</div>
-                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
-                    <div className="panel-footer">{e.date}</div>
-                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
-                </div>
-            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
-            </div>)
-                : 'まだコメントはありません';
         return (
-            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
-            <div className="container">
-                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
-                <h2>掲示板</h2>
-                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
-                <div className="page-header">
-                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
-                    <h4>投稿</h4>
-                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
+            <form>
+                <div className="form-group">
+                    <label htmlFor="name">名前：</label>
+                    <input
+                        id="name"
+                        className="form-control"
+                        style={styles.inputName}
+                        type="text"
+                        placeholder="名無しさん"
+                        value={this.state.name}
+                        onChange={(e: any) => this.nameChanged(e)}
+                    />
                 </div>
-                {chats}
-                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
-                <div className="panel panel-default">
-                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
-                    <div className="panel-heading">コメントを入力する</div>
-                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
-                    <div className="panel-body">
-                        // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
-                        <FormComp onPost={(e: any) => this.loadLogs()} />
-                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
+                <div className="form-group">
+                    <label htmlFor="comment">コメント：</label>
+
+                    <textarea
+                        id="comment"
+                        className="form-control"
+                        style={styles.textarea}
+                        placeholder="コメントを入力してください"
+                        value={this.state.body}
+                        onChange={(e: any) => this.bodyChanged(e)}
+                    ></textarea>
+                </div>
+
+                <div className="form-group">
+                    <div className="control-label">
+                        <p style={styles.right}>
+                            <Button onClick={(e: any) => this.post()}>
+                                投稿する
+                            </Button>
+                        </p>
                     </div>
-                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 </div>
-            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
-            </div>
+                <Dialog
+                    ref={(el: any) => {
+                        this.dialog = el;
+                    }}
+                />
+            </form>
         );
     }
 }
+
+const FormComp2: React.FC = () => {
+    const [name, setName] = useState('');
+    const [body, setBody] = useState('');
+    const nameChanged = (e: any) => {
+        setName(e.target.value);
+    };
+    const bodyChanged = (e: any) => {
+        setBody(e.target.value);
+    };
+    const post = (e: any) => {
+        if (body == '') {
+            dialog.showAlert('コメントを入力してください！');
+            return;
+        }
+        axios.get('/api/post').then((data: any) => {
+            if (data.data.status == 'ok') {
+                setBody('');
+                if (this.props.onPost) {
+                    this.props.onPost();
+                }
+            } else {
+                this.dialog.showAlert('投稿に失敗しました。');
+            }
+        });
+    };
+    return (
+        <>
+            <form>
+                <div className="form-group">
+                    <label htmlFor="name">名前：</label>
+                    <input
+                        id="name"
+                        className="form-control"
+                        style={styles.inputName}
+                        type="text"
+                        placeholder="名無しさん"
+                        value={name}
+                        onChange={(e: any) => nameChanged(e)}
+                    />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="comment">コメント：</label>
+                    <textarea
+                        id="comment"
+                        className="form-control"
+                        style={styles.textarea}
+                        placeholder="コメントを入力してください"
+                        value={body}
+                        onChange={(e: any) => bodyChanged(e)}
+                    ></textarea>
+                </div>
+            </form>
+            <Dialog
+                ref={(el) => {
+                    this.dialog = el;
+                }}
+            ></Dialog>
+        </>
+    );
+};
 
 export default App;
