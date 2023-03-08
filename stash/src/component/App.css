@@ -1,0 +1,13 @@
+right: {
+    textAlign: 'right',
+},
+inputName: {
+    width: 200,
+},
+textarea: {
+    minHeight: 100,
+    maxHeight: 350,
+    height: 100,
+    width: '100%',
+    padding: 10,
+},
