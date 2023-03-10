@@ -1,7 +1,7 @@
 import React from 'react';
 import './Bootstrap3.css';
+import './App.css';
 import Posts from './Posts';
-import Form from './Form';
 
 const App: React.FC = () => {
     return (
@@ -12,12 +12,15 @@ const App: React.FC = () => {
                     <h4>投稿</h4>
                 </div>
                 <Posts />
-                <div className="page-header">
-                    <h4>コメントを入力</h4>
-                    {/* <FormComp onPost={(e) => this.loadLogs()} /> */}
-                    <Form />
-                </div>
             </div>
+            <footer className="footer">
+                <div className="container">
+                    <p className="text-muted">
+                        All right reserved by{' '}
+                        <a href="https://buntin.tech">buntin</a>
+                    </p>
+                </div>
+            </footer>
         </div>
     );
 };

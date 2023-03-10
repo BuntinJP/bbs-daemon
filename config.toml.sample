@@ -1,0 +1,4 @@
+host =  "localhost"
+user = "test"
+password =  "passwd"
+database =  "bbs"

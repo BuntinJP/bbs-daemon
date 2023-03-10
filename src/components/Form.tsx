@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import './Bootstrap3.css';
+import { voidPromise } from './type';
 
-/* type formprops = {
-    onPost: (e: React.FormEvent<HTMLFormElement>) => void;
-}; */
-
-//const Form: React.FC<formprops> = ({ onPost }) => {
-const Form: React.FC = () => {
+type formprops = {
+    set: voidPromise;
+};
+interface postdata {
+    name: string;
+    body: string;
+}
+const Form: React.FC<formprops> = ({ set }) => {
     const [name, setName] = useState<string>('');
     const [body, setBody] = useState<string>('');
-    const [showDialog, setShowDialog] = useState<boolean>(false);
     return (
         <form>
             <div className="form-group">
@@ -35,16 +37,43 @@ const Form: React.FC = () => {
             </div>
             <div className="form-group">
                 <div className="control-label">
-                    <button className="btn btn-primary">投稿</button>
+                    <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={() => {
+                            post({ name: name, body: body })
+                                .then(() => {
+                                    setName(name);
+                                    setBody('');
+                                    set();
+                                })
+                                .catch((err) => {});
+                        }}
+                    >
+                        投稿
+                    </button>
                 </div>
             </div>
         </form>
     );
 };
 
-const post = () => {
-    console.log('post');
-    return;
+const post = async (data: postdata) => {
+    fetch('/api', {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            return data;
+        })
+        .catch((error) => {
+            return error;
+        });
 };
 
 export default Form;
