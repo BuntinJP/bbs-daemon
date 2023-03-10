@@ -59,7 +59,7 @@ const Form: React.FC<formprops> = ({ set }) => {
 };
 
 const post = async (data: postdata) => {
-    fetch('/api', {
+    await fetch('/api', {
         method: 'POST',
         headers: {
             Accept: 'application/json',

@@ -8,10 +8,6 @@ const Posts: React.FC = () => {
     const reload: voidPromise = async () => {
         setItems(await load());
     };
-    const postReload: voidPromise = async () => {
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        setItems(await load());
-    };
     useEffect(() => {
         reload();
     }, []);
@@ -32,17 +28,8 @@ const Posts: React.FC = () => {
             {/* 以下フォーム部分*/}
             <div className="page-header">
                 <h4>コメントを入力</h4>
-                <Form set={postReload} />
+                <Form set={reload} />
             </div>
-            <>
-                <button
-                    onClick={() => {
-                        reload();
-                    }}
-                >
-                    テスト
-                </button>
-            </>
         </>
     );
 };
