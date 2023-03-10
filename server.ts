@@ -1,7 +1,8 @@
 import express, { Express, Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import mysql from 'mysql2';
-import { loadTomlSettings } from './util';
+import toml from 'toml';
+import fs from 'fs';
 
 interface Config {
     host: string;
@@ -12,6 +13,12 @@ interface Config {
 interface Outdata {
     [key: string]: any;
 }
+
+const loadTomlSettings = (path: string) => {
+    return JSON.parse(
+        JSON.stringify(toml.parse(fs.readFileSync(path).toString()))
+    ) as Config;
+};
 
 // express server configuration
 const app: express.Express = express();
@@ -28,7 +35,7 @@ app.listen(portNum, () => {
         '\n https://bbs.buntin.tech'
     );
 });
-
+app.use('/', express.static('./public'));
 app.get('/api', (_req: Request, res: Response) => {
     console.log('取得');
     let c = mysql.createConnection(config);
@@ -45,7 +52,7 @@ app.get('/api', (_req: Request, res: Response) => {
 });
 
 // 書き込み
-app.post('/api', (req, res) => {
+app.post('/api', (req: Request, res: Response) => {
     console.log('書き込み');
     const b = req.body;
     let writerName = b.name !== '' ? b.name : '名無しさん';
@@ -85,7 +92,7 @@ app.post('/api', (req, res) => {
 
 app.use((_req, res) => {
     res.status(404);
-    express.static('./public/404.html');
+    express.static('./public/404');
 });
 const sendJSON = (res: express.Response, result: boolean, obj: Outdata) => {
     obj['result'] = result;

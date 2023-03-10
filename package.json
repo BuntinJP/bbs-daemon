@@ -2,6 +2,7 @@
     "name": "bbs-powered-by-database",
     "version": "0.1.0",
     "type": "module",
+    "main": "server.ts",
     "private": true,
     "dependencies": {
         "@testing-library/jest-dom": "^5.16.5",
@@ -25,7 +26,7 @@
         "web-vitals": "^2.1.4"
     },
     "scripts": {
-        "start": "react-scripts start",
+        "start": "yarn node --loader ts-node/esm server.ts",
         "build": "webpack",
         "test": "react-scripts test",
         "eject": "react-scripts eject"
