@@ -22,7 +22,7 @@ const loadTomlSettings = (path: string) => {
 
 // express server configuration
 const app: express.Express = express();
-const portNum = 3000;
+const portNum = 3001;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -66,12 +66,11 @@ app.post('/api', (req: Request, res: Response) => {
             if (error) throw error;
             const id: number = results[0].c;
             let d = new Date();
-            let date = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}(${
-                ['日', '月', '火', '水', '木', '金', '土'][d.getDay()]
-            })${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`.replace(
-                /\n|\r/g,
-                ''
-            );
+            let date = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}(${['日', '月', '火', '水', '木', '金', '土'][d.getDay()]
+                })${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`.replace(
+                    /\n|\r/g,
+                    ''
+                );
             c.query(
                 'INSERT INTO log VALUES (?, ?, ?, ?)',
                 [id, writerName, b.body, date],
