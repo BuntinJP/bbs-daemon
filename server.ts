@@ -1,92 +1,75 @@
 import express, { Express, Request, Response } from 'express';
 import bodyParser from 'body-parser';
-import mysql from 'mysql2';
-import toml from 'toml';
-import fs from 'fs';
+// import nedb promises
+import Datastore from 'nedb-promises';
 
-interface Config {
-    host: string;
-    user: string;
-    password: string;
-    database: string;
-}
 interface Outdata {
     [key: string]: any;
 }
 
-const loadTomlSettings = (path: string) => {
-    return JSON.parse(
-        JSON.stringify(toml.parse(fs.readFileSync(path).toString()))
-    ) as Config;
-};
-
 // express server configuration
-const app: express.Express = express();
+const app: Express = express();
 const portNum = 3001;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-const config: Config = loadTomlSettings('config.toml');
+interface Log {
+    id: number;
+    name: string;
+    body: string;
+    date: string;
+}
+//set db
+const datastore = Datastore.create('./db/log.db');
+
 app.listen(portNum, () => {
     console.log(app.name);
     console.log(
         'Server is started',
         `http://localhost:${portNum}`,
-        '\n https://bbs.buntin.tech'
+        '\n https://bbs.buntin.xyz'
     );
 });
+
+// host static files
 app.use('/', express.static('./public'));
-app.get('/api', (_req: Request, res: Response) => {
+
+
+// GET 
+app.get('/api', async (_req: Request, res: Response) => {
     console.log('取得');
-    let c = mysql.createConnection(config);
-    c.connect();
-    c.query('select * from log', (error, results: mysql.RowDataPacket[]) => {
-        if (error) {
-            sendJSON(res, false, { logs: [], msg: error });
-            return;
-        }
-        sendJSON(res, true, { logs: results });
-        c.end();
-        console.log('取得完了');
+    const logs: Log[] = await datastore.find({});
+    //sort by logs.id
+    logs.sort((a, b) => {
+        return a.id - b.id;
     });
+    sendJSON(res, true, { logs });
+    console.log('取得完了');
 });
 
-// 書き込み
-app.post('/api', (req: Request, res: Response) => {
+// POST
+app.post('/api', async (req: Request, res: Response) => {
     console.log('書き込み');
+    const id = await datastore.count({});
     const b = req.body;
     let writerName = b.name !== '' ? b.name : '名無しさん';
     if (b.body === '') {
         return;
     }
-    let c = mysql.createConnection(config);
-    c.query(
-        'select count(*) as c from log',
-        (error, results: mysql.RowDataPacket[]) => {
-            if (error) throw error;
-            const id: number = results[0].c;
-            let d = new Date();
-            let date = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}(${['日', '月', '火', '水', '木', '金', '土'][d.getDay()]
-                })${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`.replace(
-                    /\n|\r/g,
-                    ''
-                );
-            c.query(
-                'INSERT INTO log VALUES (?, ?, ?, ?)',
-                [id, writerName, b.body, date],
-                (error, _results) => {
-                    if (error) {
-                        console.error(error);
-                        sendJSON(res, false, { msg: error });
-                        c.end();
-                    }
-                    sendJSON(res, true, {});
-                    c.end();
-                    console.log('書き込み完了');
-                }
-            );
-        }
-    );
+    let d = new Date();
+    let date = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}(${['日', '月', '火', '水', '木', '金', '土'][d.getDay()]
+        })${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`.replace(
+            /\n|\r/g,
+            ''
+        );
+    const log = await datastore.insert({
+        id: id,
+        name: writerName,
+        body: b.body,
+        date: date,
+    });
+    sendJSON(res, true, { log });
+    console.log('書き込み完了');
 });
 
 app.use((_req, res) => {
@@ -98,4 +81,3 @@ const sendJSON = (res: express.Response, result: boolean, obj: Outdata) => {
     res.json(obj);
 };
 
-export type { Config };

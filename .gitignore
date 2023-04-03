@@ -29,3 +29,4 @@ yarn-error.log*
 config.json
 config.toml
 server.js
+db/
