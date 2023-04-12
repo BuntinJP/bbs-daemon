@@ -1,6 +1,6 @@
 # BBS System for My Home
 
-[https://bbs.buntin.tech](https://bbs.buntin.xyz)
+[https://bbs.buntin.xyz](https://bbs.buntin.xyz)
 
 ## How to use
 
